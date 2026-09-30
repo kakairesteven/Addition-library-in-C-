@@ -1,0 +1,2 @@
+/usr/bin/ar qc libaddition.a CMakeFiles/addition.dir/src/addition.cpp.o
+/usr/bin/ranlib libaddition.a

@@ -1,0 +1,9 @@
+#ifndef ADDITION
+#define ADDITION
+
+namespace addition
+{
+    int add(int a, int b);
+}
+
+#endif

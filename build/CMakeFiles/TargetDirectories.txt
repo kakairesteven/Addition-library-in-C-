@@ -1,0 +1,7 @@
+/Users/africastevenking/Desktop/Marconi/addition_library/build/CMakeFiles/addition.dir
+/Users/africastevenking/Desktop/Marconi/addition_library/build/CMakeFiles/edit_cache.dir
+/Users/africastevenking/Desktop/Marconi/addition_library/build/CMakeFiles/rebuild_cache.dir
+/Users/africastevenking/Desktop/Marconi/addition_library/build/CMakeFiles/list_install_components.dir
+/Users/africastevenking/Desktop/Marconi/addition_library/build/CMakeFiles/install.dir
+/Users/africastevenking/Desktop/Marconi/addition_library/build/CMakeFiles/install/local.dir
+/Users/africastevenking/Desktop/Marconi/addition_library/build/CMakeFiles/install/strip.dir

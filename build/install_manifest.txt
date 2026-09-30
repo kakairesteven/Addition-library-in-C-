@@ -1,0 +1,4 @@
+/Users/africastevenking/.local/lib/libaddition.a
+/Users/africastevenking/.local/include/addition
+/Users/africastevenking/.local/lib/cmake/Addition/AdditionTargets.cmake
+/Users/africastevenking/.local/lib/cmake/Addition/AdditionTargets-noconfig.cmake
