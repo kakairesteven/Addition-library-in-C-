@@ -1,24 +1,28 @@
-# Creating an Addition Library in C++
+# Exercise: Creating a Simple C++ Addition Library
 
-## 1. Objective
+## Objective
 
-The objective of this exercise is to create a simple reusable C++ library that provides an addition operation.
+In this exercise, you will create a small C++ library that performs addition.
 
-By completing this exercise, you will learn how to:
+The purpose is to understand how a C++ library is structured, built, installed, and used by another C++ program.
 
-* Separate a C++ interface from its implementation
-* Create a static library
-* Organize a C++ project
-* Use namespaces
-* Build a library using CMake
-* Install a C++ library
-* Use an installed library in another C++ program
+You will also create the library's header file **without a file extension**, so that it can be included as:
+
+```cpp
+#include <addition>
+```
 
 ---
 
-## 2. Project Structure
+## 1. Create the Project
 
-Create the following directory structure:
+Create a directory called:
+
+```text
+addition_library
+```
+
+Use the following structure:
 
 ```text
 addition_library/
@@ -31,11 +35,17 @@ addition_library/
     └── main.cpp
 ```
 
-The `include/addition` file is the library's public header.
+The header file must be named:
+
+```text
+addition
+```
+
+Do **not** add `.h` or `.hpp`.
 
 ---
 
-## 3. Create the Header File
+## 2. Create the Header File
 
 Create:
 
@@ -43,27 +53,17 @@ Create:
 include/addition
 ```
 
-Add the following code:
+Declare a function called `add()` that:
 
-```cpp
-#ifndef ADDITION
-#define ADDITION
+- accepts two integers;
+- returns an integer;
+- is placed inside the `addition` namespace.
 
-namespace addition
-{
-    int add(int a, int b);
-}
-
-#endif
-```
-
-This file contains the **interface** of the library.
-
-The user of the library only needs to know that an `add()` function exists. They do not need to know how the function is implemented.
+The header should contain an include guard.
 
 ---
 
-## 4. Create the Implementation
+## 3. Implement the Function
 
 Create:
 
@@ -71,27 +71,19 @@ Create:
 src/addition.cpp
 ```
 
-Add:
+Include the library header using:
 
 ```cpp
 #include <addition>
-
-namespace addition
-{
-    int add(int a, int b)
-    {
-        return a + b;
-    }
-}
 ```
 
-This file contains the implementation of the `add()` function.
+Implement the `add()` function.
 
-The implementation is separated from the public interface.
+Do not repeat the function declaration unnecessarily in the `.cpp` file.
 
 ---
 
-## 5. Create the CMake Configuration
+## 4. Create the CMake File
 
 Create:
 
@@ -99,75 +91,15 @@ Create:
 CMakeLists.txt
 ```
 
-Add:
+Configure CMake to:
 
-```cmake
-cmake_minimum_required(VERSION 3.15)
+- create a static library called `addition`;
+- use `src/addition.cpp`;
+- make the `include` directory available to programs using the library;
+- install the library;
+- install the extensionless header file.
 
-project(Addition
-    VERSION 1.0.0
-    LANGUAGES CXX
-)
-
-add_library(addition STATIC
-    src/addition.cpp
-)
-
-target_include_directories(addition
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-)
-
-target_compile_features(addition PUBLIC cxx_std_17)
-
-install(
-    TARGETS addition
-    EXPORT AdditionTargets
-    ARCHIVE DESTINATION lib
-)
-
-install(
-    FILES include/addition
-    DESTINATION include
-)
-
-install(
-    EXPORT AdditionTargets
-    FILE AdditionTargets.cmake
-    NAMESPACE Addition::
-    DESTINATION lib/cmake/Addition
-)
-```
-
-This configuration tells CMake:
-
-* The project is called `Addition`
-* The library is a static library
-* `src/addition.cpp` is part of the library
-* `include/` contains public headers
-* The library requires C++17
-* The library and header should be installed
-
----
-
-## 6. Build the Library
-
-From the project directory, create a build directory:
-
-```bash
-cmake -S . -B build
-```
-
-Then compile:
-
-```bash
-cmake --build build
-```
-
-After a successful build, the static library will be created inside the build directory.
-
-The library will typically be named:
+The resulting static library should be:
 
 ```text
 libaddition.a
@@ -175,15 +107,56 @@ libaddition.a
 
 ---
 
+## 5. Create a Build Directory
+
+From inside the project directory, create a separate build directory:
+
+```bash
+mkdir build
+```
+
+Configure the project with CMake:
+
+```bash
+cmake -S . -B build
+```
+
+This creates the build files inside the `build` directory.
+
+---
+
+## 6. Build the Library
+
+Build the library using:
+
+```bash
+cmake --build build
+```
+
+After a successful build, you should have a library similar to:
+
+```text
+build/
+└── libaddition.a
+```
+
+You can check the build directory with:
+
+```bash
+ls build
+```
+
+---
+
 ## 7. Install the Library
 
-For a user-local installation, use:
+Install the library into your local user directory:
 
 ```bash
 cmake --install build --prefix "$HOME/.local"
 ```
 
-The library will be installed approximately as:
+The installation should produce:
 
 ```text
 ~/.local/
@@ -193,11 +166,33 @@ The library will be installed approximately as:
     └── libaddition.a
 ```
 
-A user-local installation does not require administrator privileges.
+Check that the header was installed:
+
+```bash
+ls "$HOME/.local/include"
+```
+
+You should see:
+
+```text
+addition
+```
+
+Check the library:
+
+```bash
+ls "$HOME/.local/lib"
+```
+
+You should see:
+
+```text
+libaddition.a
+```
 
 ---
 
-## 8. Create an Example Application
+## 8. Create a Program That Uses the Library
 
 Create:
 
@@ -205,7 +200,14 @@ Create:
 examples/main.cpp
 ```
 
-Add:
+The program should:
+
+1. Include the addition library.
+2. Call the `add()` function.
+3. Add `10` and `20`.
+4. Display the result.
+
+Use:
 
 ```cpp
 #include <iostream>
@@ -219,17 +221,11 @@ int main()
 }
 ```
 
-The application uses the installed library through:
-
-```cpp
-#include <addition>
-```
-
 ---
 
-## 9. Compile the Example Application
+## 9. Compile the Example Program
 
-Because the library was installed under `$HOME/.local`, compile the application using:
+From the project directory, compile the example using:
 
 ```bash
 g++ examples/main.cpp \
@@ -239,7 +235,44 @@ g++ examples/main.cpp \
     -o addition_example
 ```
 
-Run the program:
+The options mean:
+
+```text
+-I    location of header files
+-L    location of libraries
+-l    library to link
+-o    name of the executable
+```
+
+In this case:
+
+```text
+-I"$HOME/.local/include"
+```
+
+tells the compiler where to find:
+
+```text
+addition
+```
+
+and:
+
+```text
+-L"$HOME/.local/lib"
+```
+
+tells the linker where to find:
+
+```text
+libaddition.a
+```
+
+---
+
+## 10. Run the Program
+
+Run:
 
 ```bash
 ./addition_example
@@ -253,227 +286,99 @@ Expected output:
 
 ---
 
-## 10. Understanding the Compilation Process
+## 11. Complete Build Sequence
 
-The overall process is:
-
-```text
-addition.cpp
-     │
-     ▼
-   Compiler
-     │
-     ▼
-addition.o
-     │
-     ▼
-Static Library
-     │
-     ▼
-libaddition.a
-     │
-     ▼
-Application
-     │
-     ▼
-addition_example
-```
-
-The important distinction is between **compilation** and **linking**.
-
-### Compilation
+Once all the files have been created, the complete sequence is:
 
 ```bash
-g++ -c addition.cpp
-```
+mkdir build
 
-converts source code into object code.
+cmake -S . -B build
 
-### Library creation
+cmake --build build
 
-The object code can be packaged into a static library.
+cmake --install build --prefix "$HOME/.local"
 
-```text
-addition.o
-    ↓
-libaddition.a
-```
-
-### Linking
-
-When compiling the application:
-
-```bash
-g++ main.cpp -laddition
-```
-
-the linker connects the application with the library implementation.
-
----
-
-## 11. Why Separate the Header and Implementation?
-
-The header provides the public interface:
-
-```cpp
-int add(int a, int b);
-```
-
-The implementation provides the details:
-
-```cpp
-int add(int a, int b)
-{
-    return a + b;
-}
-```
-
-This separation provides:
-
-* Modularity
-* Abstraction
-* Code reuse
-* Easier maintenance
-* Information hiding
-* A clearly defined API
-
----
-
-## 12. Testing the Library
-
-Create a simple test program:
-
-```text
-tests/
-└── test_addition.cpp
-```
-
-Example:
-
-```cpp
-#include <cassert>
-#include <addition>
-
-int main()
-{
-    assert(addition::add(2, 3) == 5);
-    assert(addition::add(10, 20) == 30);
-    assert(addition::add(-5, 5) == 0);
-
-    return 0;
-}
-```
-
-Compile:
-
-```bash
-g++ tests/test_addition.cpp \
+g++ examples/main.cpp \
     -I"$HOME/.local/include" \
     -L"$HOME/.local/lib" \
     -laddition \
-    -o test_addition
+    -o addition_example
+
+./addition_example
 ```
 
-Run:
+Expected output:
 
-```bash
-./test_addition
+```text
+30
 ```
-
-If the program produces no output and exits successfully, the assertions passed.
 
 ---
 
-## 13. Key Concepts Learned
+## 12. What You Should Understand
 
-This exercise introduces several important C++ and software-engineering concepts.
+By the end of the exercise, you should be able to explain:
 
-### C++ concepts
-
-* Functions
-* Header files
-* Source files
-* Namespaces
-* Compilation
-* Linking
-* Static libraries
-* Include paths
-
-### Software-engineering concepts
-
-* Modularity
-* Abstraction
-* Encapsulation
-* API design
-* Code reuse
-* Testing
-* Build automation
-* Installation
+- Why the function declaration is placed in a header file.
+- Why the function implementation is placed in a `.cpp` file.
+- What a static library is.
+- What happens during compilation.
+- What happens during linking.
+- What `-I` does.
+- What `-L` does.
+- What `-l` does.
+- Why `#include <addition>` works.
+- Why the header does not need a `.h` or `.hpp` extension.
+- How another C++ program can reuse the library.
+- Why a separate `build` directory is useful.
+- The difference between building and installing a library.
 
 ---
 
-## 14. Extension Exercise
+## 13. Extension
 
-Extend the library to provide additional mathematical operations.
-
-For example:
+Extend the library by adding another operation, such as:
 
 ```cpp
-namespace addition
-{
-    int add(int a, int b);
-    int add(int a, int b, int c);
-    double add(double a, double b);
-}
+int subtract(int a, int b);
 ```
 
-You could also create a more general mathematics library containing:
+Keep the same project structure.
 
-```text
-add()
-subtract()
-multiply()
-divide()
-power()
-absolute()
-minimum()
-maximum()
+The additional function should also be accessible through:
+
+```cpp
+#include <addition>
 ```
 
-Students should maintain the separation between:
-
-```text
-include/
-    Public interface
-
-src/
-    Implementation
-
-tests/
-    Tests
-
-examples/
-    Example applications
-```
+Rebuild and reinstall the library, then modify `main.cpp` to test the new function.
 
 ---
 
-## 15. Expected Final Structure
+## Expected Final Structure
 
-A completed project may look like:
+After completing the exercise, your project should look like:
 
 ```text
 addition_library/
 ├── CMakeLists.txt
-├── README.md
 ├── include/
 │   └── addition
 ├── src/
 │   └── addition.cpp
-├── tests/
-│   └── test_addition.cpp
-└── examples/
-    └── main.cpp
+├── examples/
+│   └── main.cpp
+└── build/
+    └── libaddition.a
 ```
 
-The final objective is to produce a **reusable C++ library that can be built, tested, installed, and used by other C++ applications**.
+The installed files should be:
+
+```text
+~/.local/
+├── include/
+│   └── addition
+└── lib/
+    └── libaddition.a
+```
