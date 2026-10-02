@@ -1,15 +1,11 @@
 # Creating a Simple C++ Addition Library
 
 ## Objective
-
 Create a small C++ library that provides a function for adding two integers. Build the library using CMake, install it locally, and use it from a separate C++ program.
-
 The exercise is designed to work on **Linux, macOS, and Windows**.
 
 ## 1. Create the Project Structure
-
 Create the following directory structure:
-
 ```text
 addition-library/
 ├── CMakeLists.txt
@@ -24,13 +20,11 @@ addition-library/
 ## 2. Create the Header File
 
 Create:
-
 ```text
 include/addition
 ```
 
 Add the following code:
-
 ```cpp
 #ifndef ADDITION_HPP_INCLUDED
 #define ADDITION_HPP_INCLUDED
@@ -44,7 +38,6 @@ namespace addition
 ```
 
 ## 3. Implement the Library
-
 Create:
 
 ```text
@@ -66,7 +59,6 @@ namespace addition
 ```
 
 ## 4. Create the CMake Configuration
-
 Create:
 
 ```text
@@ -74,7 +66,6 @@ CMakeLists.txt
 ```
 
 Add the following:
-
 ```cmake
 cmake_minimum_required(VERSION 3.20)
 
@@ -108,9 +99,7 @@ install(
 ```
 
 ## 5. Build the Library
-
 ### Linux and macOS
-
 Run:
 
 ```bash
@@ -119,26 +108,21 @@ cmake --build build
 ```
 
 ### Windows
-
 Run:
-
 ```powershell
 cmake -S . -B build
 cmake --build build
 ```
 
 ## 6. Install the Library
-
 ### Linux and macOS
 
 Run:
-
 ```bash
 cmake --install build --prefix "$HOME/.local"
 ```
 
 ### Windows
-
 Using PowerShell, run:
 
 ```powershell
@@ -146,15 +130,12 @@ cmake --install build --prefix "$HOME\.local"
 ```
 
 ## 7. Create a Program That Uses the Library
-
 Create:
-
 ```text
 examples/main.cpp
 ```
 
 Add the following code:
-
 ```cpp
 #include <iostream>
 #include <addition>
@@ -168,13 +149,9 @@ int main()
 ```
 
 ## 8. Compile and Run the Example
-
 ### Linux and macOS
-
 #### Linux
-
 Compile using:
-
 ```bash
 g++ examples/main.cpp \
     -I"$HOME/.local/include" \
