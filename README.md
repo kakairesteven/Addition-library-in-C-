@@ -1,31 +1,17 @@
-# Exercise: Creating a Simple C++ Addition Library
+# Creating a Simple C++ Addition Library
 
 ## Objective
 
-In this exercise, you will create a small C++ library that performs addition.
+Create a small C++ library that provides a function for adding two integers. Build the library using CMake, install it locally, and use it from a separate C++ program.
 
-The purpose is to understand how a C++ library is structured, built, installed, and used by another C++ program.
+The exercise is designed to work on **Linux, macOS, and Windows**.
 
-You will also create the library's header file **without a file extension**, so that it can be included as:
+## 1. Create the Project Structure
 
-```cpp
-#include <addition>
-```
-
----
-
-## 1. Create the Project
-
-Create a directory called:
+Create the following directory structure:
 
 ```text
-addition_library
-```
-
-Use the following structure:
-
-```text
-addition_library/
+addition-library/
 ├── CMakeLists.txt
 ├── include/
 │   └── addition
@@ -35,16 +21,6 @@ addition_library/
     └── main.cpp
 ```
 
-The header file must be named:
-
-```text
-addition
-```
-
-Do **not** add `.h` or `.hpp`.
-
----
-
 ## 2. Create the Header File
 
 Create:
@@ -53,17 +29,21 @@ Create:
 include/addition
 ```
 
-Declare a function called `add()` that:
+Add the following code:
 
-- accepts two integers;
-- returns an integer;
-- is placed inside the `addition` namespace.
+```cpp
+#ifndef ADDITION_HPP_INCLUDED
+#define ADDITION_HPP_INCLUDED
 
-The header should contain an include guard.
+namespace addition
+{
+    int add(int a, int b);
+}
 
----
+#endif
+```
 
-## 3. Implement the Function
+## 3. Implement the Library
 
 Create:
 
@@ -71,19 +51,21 @@ Create:
 src/addition.cpp
 ```
 
-Include the library header using:
+Add the following code:
 
 ```cpp
 #include <addition>
+
+namespace addition
+{
+    int add(int a, int b)
+    {
+        return a + b;
+    }
+}
 ```
 
-Implement the `add()` function.
-
-Do not repeat the function declaration unnecessarily in the `.cpp` file.
-
----
-
-## 4. Create the CMake File
+## 4. Create the CMake Configuration
 
 Create:
 
@@ -91,160 +73,79 @@ Create:
 CMakeLists.txt
 ```
 
-Configure CMake to:
+Add the following:
 
-- create a static library called `addition`;
-- use `src/addition.cpp`;
-- make the `include` directory available to programs using the library;
-- install the library;
-- install the extensionless header file.
+```cmake
+cmake_minimum_required(VERSION 3.20)
 
-The resulting static library should be:
+project(addition_library LANGUAGES CXX)
 
-```text
-libaddition.a
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_library(addition STATIC
+    src/addition.cpp
+)
+
+target_include_directories(addition
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+install(
+    TARGETS addition
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+install(
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/addition
+    DESTINATION include
+)
 ```
 
----
+## 5. Build the Library
 
-## 5. Create a Build Directory
+### Linux and macOS
 
-From inside the project directory, create a separate build directory:
-
-```bash
-mkdir build
-```
-
-Configure the project with CMake:
+Run:
 
 ```bash
 cmake -S . -B build
-```
-
-This creates the build files inside the `build` directory.
-
----
-
-## 6. Build the Library
-
-Build the library using:
-
-```bash
 cmake --build build
 ```
 
-After a successful build, you should have a library similar to:
+### Windows
 
-```text
-build/
-└── libaddition.a
+Run:
+
+```powershell
+cmake -S . -B build
+cmake --build build
 ```
 
-You can check the build directory with:
+## 6. Install the Library
 
-```bash
-ls build
-```
+### Linux and macOS
 
----
-
-## 7. Install the Library
-Mac/Linux
-
-Install the library into your local user directory:
+Run:
 
 ```bash
 cmake --install build --prefix "$HOME/.local"
 ```
 
-The installation should produce:
+### Windows
 
-```text
-~/.local/
-├── include/
-│   └── addition
-└── lib/
-    └── libaddition.a
-```
-
-Check that the header was installed:
-
-```bash
-ls "$HOME/.local/include"
-```
-
-You should see:
-
-```text
-addition
-```
-
-Check the library:
-
-```bash
-ls "$HOME/.local/lib"
-```
-
-You should see:
-
-```text
-libaddition.a
-```
-
-## Windows
-
-Install the library into your local user directory:
+Using PowerShell, run:
 
 ```powershell
 cmake --install build --prefix "$HOME\.local"
 ```
 
-The installation should produce:
-
-```text
-C:\Users\<username>\.local\
-├── include\
-│   └── addition\
-└── lib\
-    └── addition.lib
-```
-
-> **Note:** If you are using MinGW/GCC instead of MSVC, the library file may be `libaddition.a` rather than `addition.lib`.
-
-### Check that the header was installed
-
-```powershell
-Get-ChildItem "$HOME\.local\include"
-```
-
-You should see:
-
-```text
-addition
-```
-
-### Check the library
-
-```powershell
-Get-ChildItem "$HOME\.local\lib"
-```
-
-With **MSVC**, you should see:
-
-```text
-addition.lib
-```
-
-With **MinGW/GCC**, you may see:
-
-```text
-libaddition.a
-```
-
-
----
-
-## 8. Create a Program That Uses the Library
+## 7. Create a Program That Uses the Library
 
 Create:
 
@@ -252,14 +153,7 @@ Create:
 examples/main.cpp
 ```
 
-The program should:
-
-1. Include the addition library.
-2. Call the `add()` function.
-3. Add `10` and `20`.
-4. Display the result.
-
-Use:
+Add the following code:
 
 ```cpp
 #include <iostream>
@@ -273,164 +167,16 @@ int main()
 }
 ```
 
----
+## 8. Compile and Run the Example
 
-## 9. Compile the Example Program
+### Linux and macOS
 
-From the project directory, compile the example using:
+#### Linux
+
+Compile using:
 
 ```bash
 g++ examples/main.cpp \
     -I"$HOME/.local/include" \
-    -L"$HOME/.local/lib" \
-    -laddition \
-    -o addition_example
-```
-
-The options mean:
-
-```text
--I    location of header files
--L    location of libraries
--l    library to link
--o    name of the executable
-```
-
-In this case:
-
-```text
--I"$HOME/.local/include"
-```
-
-tells the compiler where to find:
-
-```text
-addition
-```
-
-and:
-
-```text
--L"$HOME/.local/lib"
-```
-
-tells the linker where to find:
-
-```text
-libaddition.a
-```
-
----
-
-## 10. Run the Program
-
-Run:
-
-```bash
-./addition_example
-```
-
-Expected output:
-
-```text
-30
-```
-
----
-
-## 11. Complete Build Sequence
-
-Once all the files have been created, the complete sequence is:
-
-```bash
-mkdir build
-
-cmake -S . -B build
-
-cmake --build build
-
-cmake --install build --prefix "$HOME/.local"
-
-g++ examples/main.cpp \
-    -I"$HOME/.local/include" \
-    -L"$HOME/.local/lib" \
-    -laddition \
-    -o addition_example
-
-./addition_example
-```
-
-Expected output:
-
-```text
-30
-```
-
----
-
-## 12. What You Should Understand
-
-By the end of the exercise, you should be able to explain:
-
-- Why the function declaration is placed in a header file.
-- Why the function implementation is placed in a `.cpp` file.
-- What a static library is.
-- What happens during compilation.
-- What happens during linking.
-- What `-I` does.
-- What `-L` does.
-- What `-l` does.
-- Why `#include <addition>` works.
-- Why the header does not need a `.h` or `.hpp` extension.
-- How another C++ program can reuse the library.
-- Why a separate `build` directory is useful.
-- The difference between building and installing a library.
-
----
-
-## 13. Extension
-
-Extend the library by adding another operation, such as:
-
-```cpp
-int subtract(int a, int b);
-```
-
-Keep the same project structure.
-
-The additional function should also be accessible through:
-
-```cpp
-#include <addition>
-```
-
-Rebuild and reinstall the library, then modify `main.cpp` to test the new function.
-
----
-
-## Expected Final Structure
-
-After completing the exercise, your project should look like:
-
-```text
-addition_library/
-├── CMakeLists.txt
-├── include/
-│   └── addition
-├── src/
-│   └── addition.cpp
-├── examples/
-│   └── main.cpp
-└── build/
-    └── libaddition.a
-```
-
-The installed files should be:
-
-```text
-~/.local/
-├── include/
-│   └── addition
-└── lib/
-    └── libaddition.a
+    -L"$HOME/.local/lib
 ```
