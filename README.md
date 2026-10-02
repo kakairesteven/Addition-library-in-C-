@@ -149,6 +149,7 @@ ls build
 ---
 
 ## 7. Install the Library
+Mac/Linux
 
 Install the library into your local user directory:
 
@@ -189,6 +190,57 @@ You should see:
 ```text
 libaddition.a
 ```
+
+## Windows
+
+Install the library into your local user directory:
+
+```powershell
+cmake --install build --prefix "$HOME\.local"
+```
+
+The installation should produce:
+
+```text
+C:\Users\<username>\.local\
+├── include\
+│   └── addition\
+└── lib\
+    └── addition.lib
+```
+
+> **Note:** If you are using MinGW/GCC instead of MSVC, the library file may be `libaddition.a` rather than `addition.lib`.
+
+### Check that the header was installed
+
+```powershell
+Get-ChildItem "$HOME\.local\include"
+```
+
+You should see:
+
+```text
+addition
+```
+
+### Check the library
+
+```powershell
+Get-ChildItem "$HOME\.local\lib"
+```
+
+With **MSVC**, you should see:
+
+```text
+addition.lib
+```
+
+With **MinGW/GCC**, you may see:
+
+```text
+libaddition.a
+```
+
 
 ---
 
